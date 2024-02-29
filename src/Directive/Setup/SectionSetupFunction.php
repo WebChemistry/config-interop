@@ -37,7 +37,7 @@ final class SectionSetupFunction implements SetupFunction, Visitor
 		return 'section';
 	}
 
-	public function invokeSetupFunction(array $arguments, Structure $structure, StructureValueBuilder $builder, GeneratorContext $context): void
+	public function invokeSetupFunction(array $arguments, callable $parse, Structure $structure, StructureValueBuilder $builder): void
 	{
 		$builder->setOption('section', $arguments[0] ?? null);
 	}

@@ -29,7 +29,7 @@ final class CommentSetupFunction implements SetupFunction, Visitor
 		return 'comment';
 	}
 
-	public function invokeSetupFunction(array $arguments, Structure $structure, StructureValueBuilder $builder, GeneratorContext $context): void
+	public function invokeSetupFunction(array $arguments, callable $parse, Structure $structure, StructureValueBuilder $builder): void
 	{
 		$builder->setOption('comment', $arguments[0] ?? null);
 	}

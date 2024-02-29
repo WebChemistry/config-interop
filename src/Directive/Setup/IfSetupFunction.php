@@ -3,15 +3,12 @@
 namespace WebChemistry\ConfigInterop\Directive\Setup;
 
 use LogicException;
-use stdClass;
 use Symfony\Component\ExpressionLanguage\ExpressionLanguage;
-use WebChemistry\ConfigInterop\Context\GeneratorContext;
-use WebChemistry\ConfigInterop\Directive\Setup\SetupFunction;
 use WebChemistry\ConfigInterop\Exception\SkipProcessionException;
 use WebChemistry\ConfigInterop\Structure;
 use WebChemistry\ConfigInterop\StructureValueBuilder;
 
-final class SkipIfSetupFunction implements SetupFunction
+final class IfSetupFunction implements SetupFunction
 {
 
 	private ExpressionLanguage $language;
@@ -23,10 +20,10 @@ final class SkipIfSetupFunction implements SetupFunction
 
 	public function getName(): string
 	{
-		return 'skipIf';
+		return 'if';
 	}
 
-	public function invokeSetupFunction(array $arguments, Structure $structure, StructureValueBuilder $builder, GeneratorContext $context): void
+	public function invokeSetupFunction(array $arguments, callable $parse, Structure $structure, StructureValueBuilder $builder): void
 	{
 		$expression = $arguments[0] ?? null;
 
@@ -35,11 +32,13 @@ final class SkipIfSetupFunction implements SetupFunction
 		}
 
 		$variables = [
-			'context' => $context->all(),
+			'context' => $structure->getContext()->all(),
 		];
 
 		if ($this->language->evaluate($expression, $variables)) {
-			throw new SkipProcessionException();
+			$parse($arguments[1] ?? null);
+		} else {
+			$parse($arguments[2] ?? null);
 		}
 	}
 

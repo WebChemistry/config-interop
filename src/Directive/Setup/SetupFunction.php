@@ -13,7 +13,9 @@ interface SetupFunction
 
 	/**
 	 * @param mixed[] $arguments
+	 * @param callable(mixed): mixed $parse
+	 * @return mixed|void
 	 */
-	public function invokeSetupFunction(array $arguments, Structure $structure, StructureValueBuilder $builder, GeneratorContext $context): void;
+	public function invokeSetupFunction(array $arguments, callable $parse, Structure $structure, StructureValueBuilder $builder);
 
 }

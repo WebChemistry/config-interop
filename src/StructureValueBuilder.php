@@ -28,9 +28,20 @@ final class StructureValueBuilder
 	/**
 	 * @return mixed[]
 	 */
-	public function getOriginal(): array
+	public function getOriginal(bool $includeInternal = true): array
 	{
-		return $this->original;
+		if ($includeInternal) {
+			return $this->original;
+		} else {
+			return array_filter($this->original, fn ($key) => !str_starts_with($key, '_'), ARRAY_FILTER_USE_KEY);
+		}
+	}
+
+	public function setOriginalValue(int|string $key, mixed $item): self
+	{
+		$this->original[$key] = $item;
+
+		return $this;
 	}
 
 	public function removeFromOriginal(string|int $key): self
