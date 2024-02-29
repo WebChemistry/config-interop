@@ -33,7 +33,7 @@ final class JavascriptLanguage implements Visitor
 
 		CommentHelper::flushMultilineComments($builder, 2);
 
-		$builder->ln(sprintf('const %s = {', $context->getString('const')));
+		$builder->ln(sprintf('export const %s = {', $context->getString('const')));
 		$builder->increaseLevel();
 	}
 
