@@ -2,6 +2,8 @@
 
 namespace WebChemistry\ConfigInterop;
 
+use LogicException;
+
 final class Parameters
 {
 
@@ -25,19 +27,21 @@ final class Parameters
 			return $value;
 		}
 
-		if (str_starts_with($value, '%') && str_ends_with($value, '%')) {
+		if (str_starts_with($value, '%') && str_ends_with($value, '%') && $value[1] !== '%') {
 			$param = substr($value, 1, -1);
 
-			if (array_key_exists($param, $this->parameters)) {
-				return $this->parameters[$param];
+			if (!array_key_exists($param, $this->parameters)) {
+				throw new LogicException(sprintf('Parameter %%%s%% not found', $param));
 			}
+
+			return $this->parameters[$param];
 		}
 
-		$return = preg_replace_callback('#%([a-zA-Z\.0-9_]+)%#', function (array $matches) {
+		$return = preg_replace_callback('#(?<!%)%([a-zA-Z\.0-9_]+)%#', function (array $matches) {
 			$match = $matches[1];
 
-			if (array_key_exists($match, $this->parameters)) {
-				return $this->parameters[$match];
+			if (!array_key_exists($match, $this->parameters)) {
+				throw new LogicException(sprintf('Parameter %%%s%% not found', $match));
 			}
 
 			return $match[0];
