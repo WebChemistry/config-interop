@@ -5,6 +5,7 @@ namespace WebChemistry\ConfigInterop\Directive;
 use LogicException;
 use Nette\Neon\Entity;
 use WebChemistry\ConfigInterop\Directive\Setup\ChainSetupFunction;
+use WebChemistry\ConfigInterop\Directive\Setup\DeprecatedSetupFunction;
 use WebChemistry\ConfigInterop\Directive\Setup\IfSetupFunction;
 use WebChemistry\ConfigInterop\Directive\Setup\KeepSetupFunction;
 use WebChemistry\ConfigInterop\Directive\Setup\SetupFunction;
@@ -42,6 +43,7 @@ final class SetupDirective implements Directive
 		$generator->addFeature(new ChainSetupFunction());
 		$generator->addFeature(new KeepSetupFunction());
 		$generator->addFeature(new UnpackSetupFunction());
+		$generator->addFeature(new DeprecatedSetupFunction());
 	}
 
 	/**

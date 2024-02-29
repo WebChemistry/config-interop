@@ -20,8 +20,9 @@ final class UnpackSetupFunction implements SetupFunction
 		StructureValueBuilder $builder,
 	): void
 	{
+		$emptyArguments = !$arguments;
 		foreach ($builder->getOriginal(false) as $keyToRemove => $value) {
-			if (is_array($value)) {
+			if (is_array($value) && ($emptyArguments || in_array($keyToRemove, $arguments, true))) {
 				foreach ($value as $key => $item) {
 					$builder->setOriginalValue($key, $item);
 				}

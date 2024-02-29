@@ -83,10 +83,11 @@ final class Structure
 
 	/**
 	 * @param mixed[] $values
+	 * @param mixed[] $inheritedValueOptions
 	 */
-	private function processValues(array $values): ?StructureValues
+	private function processValues(array $values, array $inheritedValueOptions = []): ?StructureValues
 	{
-		$builder = new StructureValueBuilder($values, functions: $this->functions);
+		$builder = new StructureValueBuilder($values, inheritedValueOptions: $inheritedValueOptions, functions: $this->functions);
 
 		foreach ($this->directives as $directive) {
 			$key = $directive->getName();
@@ -105,7 +106,7 @@ final class Structure
 
 		foreach ($builder->getOriginal() as $key => $value) {
 			if (is_array($value)) {
-				$value = $this->processValues($value);
+				$value = $this->processValues($value, $builder->getInheritedValueOptions());
 
 				if ($value !== null) {
 					$builder->addValue($key, $value);

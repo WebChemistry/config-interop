@@ -12,6 +12,7 @@ final class StructureValueBuilder
 
 	/**
 	 * @param mixed[] $options
+	 * @param mixed[] $inheritedValueOptions
 	 * @param array<StructureValue|StructureValues> $values
 	 * @param mixed[] $original
 	 */
@@ -19,6 +20,7 @@ final class StructureValueBuilder
 		private array $original,
 		private array $values = [],
 		private array $options = [],
+		private array $inheritedValueOptions = [],
 		?ConfigFunctions $functions = null,
 	)
 	{
@@ -35,6 +37,14 @@ final class StructureValueBuilder
 		} else {
 			return array_filter($this->original, fn ($key) => !str_starts_with($key, '_'), ARRAY_FILTER_USE_KEY);
 		}
+	}
+
+	/**
+	 * @return mixed[]
+	 */
+	public function getInheritedValueOptions(): array
+	{
+		return $this->inheritedValueOptions;
 	}
 
 	public function setOriginalValue(int|string $key, mixed $item): self
@@ -78,6 +88,13 @@ final class StructureValueBuilder
 		return $this;
 	}
 
+	public function setInheritedValueOption(string $key, mixed $value): self
+	{
+		$this->inheritedValueOptions[$key] = $value;
+
+		return $this;
+	}
+
 	public function addOption(string $key, mixed $value): self
 	{
 		if (isset($this->options[$key])) {
@@ -103,7 +120,7 @@ final class StructureValueBuilder
 			return $this->functions->callByEntity($value);
 		}
 
-		return new StructureValue($value, $options);
+		return new StructureValue($value, array_merge($options, $this->inheritedValueOptions));
 	}
 
 }
