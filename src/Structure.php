@@ -55,12 +55,14 @@ final class Structure
 	 */
 	public function getOutput(): array
 	{
-		// @phpstan-ignore-next-line
-		return SchemaProcessor::process($this->structure['output'] ?? [], Expect::arrayOf(Expect::structure([
+		/** @var array{language: string, file: string, context: mixed[]}[] $values */
+		$values = SchemaProcessor::process($this->structure['output'] ?? [], Expect::arrayOf(Expect::structure([
 			'language' => Expect::string()->required(),
 			'file' => Expect::string()->required(),
 			'context' => Expect::array()->default([]),
 		])));
+
+		return $this->parameters->expandArray($values);
 	}
 
 	public function getVariables(): StructureValues

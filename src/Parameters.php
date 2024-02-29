@@ -50,4 +50,25 @@ final class Parameters
 		return $return === null ? $value : $return;
 	}
 
+	/**
+	 * @param mixed[] $values
+	 * @return mixed[]
+	 */
+	public function expandArray(array $values): array
+	{
+		$return = [];
+
+		foreach ($values as $key => $value) {
+			if (is_array($value)) {
+				$return[$key] = $this->expandArray($value);
+
+				continue;
+			}
+
+			$return[$key] = $this->expand($value);
+		}
+
+		return $return;
+	}
+
 }
