@@ -89,6 +89,8 @@ final class Generator
 			]));
 
 			FileSystem::write($file, $this->generateString($structure, $context));
+
+			echo sprintf('Generated config for %s [%s]: %s', $language, $id, realpath($file)) . PHP_EOL;
 		}
 	}
 
