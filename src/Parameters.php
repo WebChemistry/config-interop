@@ -25,7 +25,7 @@ final class Parameters
 			return $value;
 		}
 
-		if (str_starts_with($value, '$') && str_ends_with($value, '$')) {
+		if (str_starts_with($value, '%') && str_ends_with($value, '%')) {
 			$param = substr($value, 1, -1);
 
 			if (array_key_exists($param, $this->parameters)) {
@@ -33,7 +33,7 @@ final class Parameters
 			}
 		}
 
-		$return = preg_replace_callback('#\$([a-zA-Z\.0-9_]+)\$#', function (array $matches) {
+		$return = preg_replace_callback('#%([a-zA-Z\.0-9_]+)%#', function (array $matches) {
 			$match = $matches[1];
 
 			if (array_key_exists($match, $this->parameters)) {
