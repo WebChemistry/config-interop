@@ -44,7 +44,7 @@ final class Parameters
 				throw new LogicException(sprintf('Parameter %%%s%% not found', $match));
 			}
 
-			return $match[0];
+			return $this->parameters[$match];
 		}, $value);
 
 		return $return === null ? $value : $return;
