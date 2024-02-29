@@ -20,12 +20,16 @@ final class Structure
 
 	private GeneratorContext $context;
 
+	private Parameters $parameters;
+
 	/**
 	 * @param mixed[] $structure
+	 * @param array<string, scalar|null> $parameters
 	 * @param Directive[] $directives
 	 */
 	public function __construct(
 		private array $structure,
+		array $parameters,
 		array $directives,
 		private ConfigFunctions $functions,
 	)
@@ -34,6 +38,7 @@ final class Structure
 			$this->directives[$directive->getName()] = $directive;
 		}
 
+		$this->parameters = $this->getParameters(new Parameters($parameters));
 		$this->context = new GeneratorContext([]);
 	}
 
@@ -109,11 +114,44 @@ final class Structure
 					throw new LogicException(sprintf('Value must be scalar or array or function call, %s given', get_debug_type($value)));
 				}
 
+				/** @var scalar|null $value */
+				$value = $this->parameters->expand($value);
+
 				$builder->addValue($key, $builder->createValue($value));
 			}
 		}
 
 		return $builder->build();
+	}
+
+	private function getParameters(Parameters $parameters): Parameters
+	{
+		$structParams = $this->structure['parameters'] ?? [];
+
+		if (!is_array($structParams)) {
+			throw new LogicException('Parameters must be array');
+		}
+
+		$this->processParameters($structParams, $parameters);
+
+		return $parameters;
+	}
+
+	/**
+	 * @param array<string, mixed> $structParams
+	 */
+	private function processParameters(array $structParams, Parameters $parameters, ?string $key = null): void
+	{
+		foreach ($structParams as $index => $value) {
+			if (is_array($value)) {
+				$this->processParameters($value, $parameters, $key !== null ? $key . '.' . $index : $index);
+			} else {
+				/** @var scalar|null $value */
+				$value = $parameters->expand($value);
+
+				$parameters->setParameter($key !== null ? $key . '.' . $index : $index, $value);
+			}
+		}
 	}
 
 }

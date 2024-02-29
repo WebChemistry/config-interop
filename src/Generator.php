@@ -55,7 +55,10 @@ final class Generator
 		return $this;
 	}
 
-	public function generate(string $configFile): void
+	/**
+	 * @param array<string, scalar|null> $parameters
+	 */
+	public function generate(string $configFile, array $parameters = []): void
 	{
 		$config = Neon::decode(FileSystem::read($configFile));
 
@@ -65,6 +68,7 @@ final class Generator
 
 		$structure = new Structure(
 			$config,
+			$parameters,
 			array_merge([
 				new SetupDirective($this->setupFunctions),
 			], $this->directives),
